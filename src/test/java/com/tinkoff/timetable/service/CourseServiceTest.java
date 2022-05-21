@@ -2,8 +2,7 @@ package com.tinkoff.timetable.service;
 
 import com.tinkoff.timetable.model.dto.CourseDto;
 import com.tinkoff.timetable.model.dto.LessonDto;
-import com.tinkoff.timetable.model.dto.TeacherDto;
-import com.tinkoff.timetable.model.request.RegistrationRequest;
+import com.tinkoff.timetable.model.entity.Lesson;
 import com.tinkoff.timetable.repository.CourseRepository;
 import com.tinkoff.timetable.repository.LessonRepository;
 import com.tinkoff.timetable.repository.TeacherRepository;
@@ -16,8 +15,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,7 +70,9 @@ public class CourseServiceTest extends AbstractServiceTest {
             "VALUES (3, 0, 'desc', 'course', 0, null, 0)")
     public void addLesson() {
         LessonDto lesson = courseService.addLessonToCourse(3, lessonDto);
-        assertEquals(courseRepository.getById(3L).getLessons().get(0).getName(), lessonDto.getName());
+        Lesson lessonInRepo = new Lesson();
+        lessonInRepo.setId(1L);
+        assertTrue(courseRepository.getById(3L).getLessons().contains(lessonInRepo));
     }
 
     @Test
@@ -81,7 +80,7 @@ public class CourseServiceTest extends AbstractServiceTest {
             "VALUES (4, 0, 'desc', 'course', 0, null, 0)")
     @Sql(statements = "INSERT INTO teacher(id, birthday, name, login, password, role) " +
             "VALUES (5, '1999-01-08', 'Good teacher', 'user1', 'user1', 0)")
-    public void fromCopy(){
+    public void fromCopy() {
         CourseDto fromCopy = courseService.createFromCopy(4, 5);
         assertEquals(fromCopy.getName(), "course");
         assertEquals(fromCopy.getTeacherId(), 5);
@@ -92,20 +91,25 @@ public class CourseServiceTest extends AbstractServiceTest {
             "VALUES (6, '1999-01-08', 'Good teacher', 'user1', 'user1', 0)")
     @Sql(statements = "INSERT INTO course(id, category, description,name, members, teacher_id, type) " +
             "VALUES (5, 0, 'desc', 'course', 0, null, 0)")
-    public void getLessons(){
-        courseService.addLessonToCourse(5, lessonDto);
-        courseService.addLessonToCourse(5, lessonDto);
+    public void getLessons() {
+        LessonDto dto1 = courseService.addLessonToCourse(5, lessonDto);
+        LessonDto dto2 = courseService.addLessonToCourse(5, lessonDto);
         var lessons = courseService.getCourseLessons(5);
-        assertEquals(courseRepository.getById(5L).getLessons().get(0).getName(), lessonDto.getName());
-        assertEquals(courseRepository.getById(5L).getLessons().get(1).getName(), lessonDto.getName());
+        Lesson lessonInRepo1 = new Lesson();
+        lessonInRepo1.setId(1L);
+        Lesson lessonInRepo2 = new Lesson();
+        lessonInRepo2.setId(2L);
+        assertTrue(courseRepository.getById(5L).getLessons().contains(lessonInRepo1));
+        assertTrue(courseRepository.getById(5L).getLessons().contains(lessonInRepo2));
         assertEquals(lessons.size(), 2);
     }
+
     @Test
     @Sql(statements = "INSERT INTO course(id, category, description,name, members, teacher_id, type) " +
             "VALUES (6, 0, 'desc', 'course', 0, null, 0)")
     @Sql(statements = "INSERT INTO course(id, category, description,name, members, teacher_id, type) " +
             "VALUES (7, 0, 'desc', 'course', 0, null, 0)")
-    public void getAll(){
+    public void getAll() {
         var courses = courseService.getAll();
         assertEquals(courses.get(0).getName(), "course");
         assertEquals(courses.size(), 2);
@@ -118,7 +122,6 @@ public class CourseServiceTest extends AbstractServiceTest {
         });
         assertEquals(entityNotFoundException.getMessage(), "Course with id=50 not found");
     }
-
 
 
 }

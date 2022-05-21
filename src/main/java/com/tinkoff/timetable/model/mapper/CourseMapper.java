@@ -66,7 +66,7 @@ public class CourseMapper {
                                 .teacherId(lesson.getTeacher().getId())
                                 .build());
                             return lessonService.getById(dto.getId());})
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toSet()));
         return newCourse;
     }
 }

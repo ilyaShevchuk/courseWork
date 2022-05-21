@@ -10,14 +10,16 @@ import com.tinkoff.timetable.model.request.RegistrationRequest;
 import com.tinkoff.timetable.repository.LessonRepository;
 import com.tinkoff.timetable.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class TeacherService {
@@ -42,34 +44,41 @@ public class TeacherService {
     }
 
     public TeacherDto addTeacher(TeacherDto teacherDto) {
-        return teacherMapper.fromEntity(teacherRepository.save(teacherMapper.fromDto(teacherDto)));
+        TeacherDto addedTeacher = teacherMapper.fromEntity(teacherRepository.save(teacherMapper.fromDto(teacherDto)));
+        log.info(String.format("Teacher id=%d created", addedTeacher.getId()));
+        return addedTeacher;
     }
 
+    @Transactional
     public TeacherDto updateTeacher(long id, TeacherDto teacherDto) {
         var old = getById(id);
         old.setName(teacherDto.getName());
         old.setBirthday(teacherDto.getBirthday());
+        log.info(String.format("Teacher id=%d updated", id));
         return teacherMapper.fromEntity(teacherRepository.save(old));
     }
 
     public void deleteTeacher(long id) {
-        getById(id);
-        teacherRepository.deleteById(id);
+        Teacher byId = getById(id);
+        teacherRepository.delete(byId);
+        log.info(String.format("Teacher id=%d deleted", id));
     }
 
     public TeacherDto registerTeacher(RegistrationRequest registrationRequest) {
         Teacher teacher = teacherMapper.fromDto(registrationRequest.getTeacher());
         teacher.setLogin(registrationRequest.getLogin());
         teacher.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        log.info(String.format("Teacher id=%d registered", teacher.getId()));
         return teacherMapper.fromEntity(teacherRepository.save(teacher));
     }
 
-    public List<LessonDto> getTeacherSchedule(long teacherId){
+    @Transactional
+    public List<LessonDto> getTeacherSchedule(long teacherId) {
         getById(teacherId);
-        var lessons = lessonRepository.getAllByTeacherId(teacherId).stream()
-                .map(lessonMapper::fromEntity).collect(Collectors.toList());
-        Collections.sort(lessons);
-        return lessons;
+        return lessonRepository.getAllByTeacherId(teacherId).stream()
+                .map(lessonMapper::fromEntity)
+                .sorted()
+                .collect(Collectors.toList());
     }
 }
 

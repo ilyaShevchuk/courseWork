@@ -28,6 +28,9 @@ CREATE TABLE lesson
     PRIMARY KEY (id)
 );
 
+CREATE INDEX teacher_index ON lesson (teacher_id);
+
+
 CREATE TABLE teacher
 (
     id       BIGINT NOT NULL,

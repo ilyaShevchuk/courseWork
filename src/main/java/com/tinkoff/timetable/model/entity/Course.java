@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,7 +42,7 @@ public class Course {
     private Teacher teacher;
 
     @OneToMany
-    private List<Lesson> lessons;
+    private Set<Lesson> lessons;
 
     public Course() {
     }

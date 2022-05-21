@@ -6,6 +6,7 @@ import com.tinkoff.timetable.response.ErrorResponse;
 import com.tinkoff.timetable.response.LessonResponse;
 import com.tinkoff.timetable.response.TeacherResponse;
 import com.tinkoff.timetable.service.TeacherService;
+import com.yannbriancon.interceptor.HibernateQueryInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class TeacherControllerTest extends AbstractControllerTest {
     private TeacherRepository teacherRepository;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private HibernateQueryInterceptor hibernateQueryInterceptor;
+
 
     @BeforeEach
     void setUp() {
@@ -53,15 +57,17 @@ public class TeacherControllerTest extends AbstractControllerTest {
         String uri = "/teacher/creation";
         teacherDto.setId(null);
         String inputJson = mapToJson(teacherDto);
+        hibernateQueryInterceptor.startQueryCount();
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
                 .post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(inputJson)).andReturn();
+        assertEquals(2, hibernateQueryInterceptor.getQueryCount());
         int status = mvcResult.getResponse().getStatus();
         assertEquals(201, status);
         String content = mvcResult.getResponse().getContentAsString();
         assertEquals(new TeacherResponse(id, TEACHER_NAME), mapFromJson(content, TeacherResponse.class));
-        assertEquals(teacherRepository.getById(id).getName(), TEACHER_NAME);
+        assertEquals(TEACHER_NAME, teacherRepository.getById(id).getName());
     }
 
     @Test
@@ -71,8 +77,10 @@ public class TeacherControllerTest extends AbstractControllerTest {
         TeacherDto teacherWithNullName = teacherDto;
         teacherWithNullName.setName(null);
         String inputJson = mapToJson(teacherWithNullName);
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andReturn();
         assertEquals(400, mvcResult.getResponse().getStatus());
     }
 
@@ -83,8 +91,11 @@ public class TeacherControllerTest extends AbstractControllerTest {
     void getTeacherSuccessful() throws Exception {
         long id = 1L;
         String uri = "/teacher/" + id;
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        hibernateQueryInterceptor.startQueryCount();
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        assertEquals(1, hibernateQueryInterceptor.getQueryCount());
         assertEquals(200, mvcResult.getResponse().getStatus());
         String content = mvcResult.getResponse().getContentAsString();
         teacherDto.setId(id);
@@ -97,7 +108,8 @@ public class TeacherControllerTest extends AbstractControllerTest {
     void getTeacherNotFound() throws Exception {
         long id = 50L;
         String uri = "/teacher/" + id;
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         String content = mvcResult.getResponse().getContentAsString();
@@ -112,12 +124,16 @@ public class TeacherControllerTest extends AbstractControllerTest {
         long id = 1L;
         String uri = "/teacher/" + id;
         String inputJson = mapToJson(teacherDto);
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+        hibernateQueryInterceptor.startQueryCount();
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andReturn();
+        assertEquals(1, hibernateQueryInterceptor.getQueryCount());
         assertEquals(201, mvcResult.getResponse().getStatus());
         String content = mvcResult.getResponse().getContentAsString();
         assertEquals(new TeacherResponse(id, TEACHER_NAME), mapFromJson(content, TeacherResponse.class));
-        assertEquals(teacherRepository.getById(id).getName(), TEACHER_NAME);
+        assertEquals(TEACHER_NAME, teacherRepository.getById(id).getName());
     }
 
     @Test
@@ -127,7 +143,10 @@ public class TeacherControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         long id = 1L;
         String uri = "/teacher/" + id;
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)).andReturn();
+        hibernateQueryInterceptor.startQueryCount();
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .delete(uri)).andReturn();
+        assertEquals(2, hibernateQueryInterceptor.getQueryCount());
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertTrue(teacherRepository.findById(id).isEmpty());
     }
@@ -137,7 +156,8 @@ public class TeacherControllerTest extends AbstractControllerTest {
         teacherService.registerTeacher(registrationRequest);
         long id = 1L;
         String uri = "/teacher/" + id;
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
+                .delete(uri)
                 .header(HttpHeaders.AUTHORIZATION, authUser))
                 .andReturn();
         assertEquals(401, mvcResult.getResponse().getStatus());
@@ -153,10 +173,12 @@ public class TeacherControllerTest extends AbstractControllerTest {
         long id = 0L;
         String uri = "/teacher/" + id + "/schedule";
         String inputJson = mapToJson(teacherDto);
+        hibernateQueryInterceptor.startQueryCount();
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
                 .post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(inputJson)).andReturn();
+        assertEquals(2, hibernateQueryInterceptor.getQueryCount());
         assertEquals(200, mvcResult.getResponse().getStatus());
         String content = mvcResult.getResponse().getContentAsString();
         List<LessonResponse> lessons = Arrays.stream(mapFromJson(content, LessonResponse[].class)).toList();

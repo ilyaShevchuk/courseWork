@@ -1,6 +1,7 @@
 package com.tinkoff.timetable.model.entity;
 
 import com.tinkoff.timetable.model.FormatType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +10,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@EqualsAndHashCode(of="id")
 @Entity
-@Table(name = "lesson")
+@Table(name = "lesson", indexes = @Index(name = "teacher_index", columnList = "teacher_id"))
 public class Lesson {
 
     @Id
@@ -24,7 +26,7 @@ public class Lesson {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Teacher teacher;
 
     @Column(name = "time")
