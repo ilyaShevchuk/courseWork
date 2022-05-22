@@ -15,7 +15,7 @@ cache:
 build_job:
   stage: build
   tags:
-    - ci pwsh
+    - ci
 
   script:
     - echo "Maven compile started"
@@ -25,7 +25,7 @@ build_job:
 test_job:
   stage: test
   tags:
-    - ci pwsh
+    - ci
 
   script:
     - echo "Maven test started"
