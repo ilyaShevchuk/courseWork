@@ -125,7 +125,7 @@ public class CourseControllerTest extends AbstractControllerTest {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
         assertEquals(1, hibernateQueryInterceptor.getQueryCount());
-        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(200, mvcResult.getResponse().getStatus());
         String content = mvcResult.getResponse().getContentAsString();
         assertEquals(new CourseResponse(id, COURSE_NAME), mapFromJson(content, CourseResponse.class));
         assertEquals(courseRepository.getById(id).getName(), COURSE_NAME);
@@ -170,13 +170,12 @@ public class CourseControllerTest extends AbstractControllerTest {
     @Sql(statements = "INSERT INTO course(id, category, description,name, members, teacher_id, type) " +
             "VALUES (1, 8, 'desc', 'Algebra 7 class gdz', 0, 0, 1)")
     @Sql(statements = "INSERT INTO lesson(id, description, extra_info, name, time, type, teacher_id) " +
-            "VALUES (1, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T12:00', 0, 0)")
-    @Sql(statements = "INSERT INTO lesson(id, description, extra_info, name, time, type, teacher_id) " +
-            "VALUES (2, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T12:00', 0, 0)")
+            "VALUES " +
+            "(1, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T12:00', 0, 0)," +
+            "(2, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T10:00', 0, 0)")
     @Sql(statements = "INSERT INTO course_lessons " +
-            "VALUES(1, 1)")
-    @Sql(statements = "INSERT INTO course_lessons " +
-            "VALUES(1, 2)")
+            "VALUES" +
+            "(1, 1), (1, 2)")
     void getCourseLessons() throws Exception {
         long id = 1L;
         String uri = "/course/" + id + "/lesson";

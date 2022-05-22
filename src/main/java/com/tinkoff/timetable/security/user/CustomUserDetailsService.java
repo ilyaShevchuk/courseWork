@@ -3,12 +3,14 @@ package com.tinkoff.timetable.security.user;
 import com.tinkoff.timetable.model.entity.Teacher;
 import com.tinkoff.timetable.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {

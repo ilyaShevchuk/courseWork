@@ -35,10 +35,6 @@ public class TeacherServiceTest extends AbstractServiceTest {
     @Autowired
     private TeacherService teacherService;
 
-    @AfterEach
-    public void afterEach(){
-    }
-
     @Test
     public void createTeacher(){
         TeacherDto dto = teacherService.addTeacher(teacherDto);

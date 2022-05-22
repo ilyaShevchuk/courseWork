@@ -29,16 +29,19 @@ public class TeacherService {
     private final LessonRepository lessonRepository;
     private final LessonMapper lessonMapper;
 
+    @Transactional(readOnly = true)
     public Teacher getById(long id) {
         return teacherRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Teacher with id=" + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public Teacher getByLogin(String login) {
         return teacherRepository.findByLoginIgnoreCase(login).orElseThrow(
                 () -> new NoAccessException("Teacher with id login" + login + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public TeacherDto getDtoById(long id) {
         return teacherMapper.fromEntity(getById(id));
     }
@@ -58,6 +61,7 @@ public class TeacherService {
         return teacherMapper.fromEntity(teacherRepository.save(old));
     }
 
+    @Transactional
     public void deleteTeacher(long id) {
         Teacher byId = getById(id);
         teacherRepository.delete(byId);

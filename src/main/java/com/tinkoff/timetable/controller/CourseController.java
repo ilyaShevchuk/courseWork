@@ -48,7 +48,7 @@ public class CourseController {
                 courseService.getAll().stream()
                 .map(GetCourseResponse::new)
                 .collect(Collectors.toList()),
-                HttpStatus.CREATED);
+                HttpStatus.OK);
     }
 
     @GetMapping("/{course_id}")
@@ -66,7 +66,7 @@ public class CourseController {
         CourseDto course = courseService.updateCourse(courseId, requestBody);
         return new ResponseEntity<>(
                 new CourseResponse(course.getId(), course.getName()),
-                HttpStatus.CREATED);
+                HttpStatus.OK);
 
     }
 

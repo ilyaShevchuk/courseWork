@@ -28,17 +28,14 @@ public class CourseService {
     private final LessonService lessonService;
     private final LessonMapper lessonMapper;
 
-    private Course getById(long id) {
-        return courseRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Course with id=" + id + " not found"));
-    }
-
+    @Transactional(readOnly = true)
     public List<CourseDto> getAll() {
         return courseRepository.findAll().stream()
                 .map((courseMapper::fromEntity))
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<LessonDto> getCourseLessons(long courseId) {
         Course course = getById(courseId);
         return course.getLessons().stream()
@@ -46,10 +43,12 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public CourseDto getDtoById(long id) {
         return courseMapper.fromEntity(getById(id));
     }
 
+    @Transactional
     public CourseDto addCourse(CourseDto courseDto) {
         CourseDto addedCourse = courseMapper.fromEntity(courseRepository.save(courseMapper.fromDto(courseDto)));
         log.info(String.format("Course id=%d created", addedCourse.getId()));
@@ -68,6 +67,7 @@ public class CourseService {
         return courseMapper.fromEntity(courseRepository.save(old));
     }
 
+    @Transactional
     public void deleteCourse(Long id) {
         Course byId = getById(id);
         courseRepository.delete(byId);
@@ -90,5 +90,10 @@ public class CourseService {
                 courseRepository.save(courseMapper.makeCopy(getById(courseId), teacherService.getById(teacherId))));
         log.info(String.format("Course id=%d created from copy id=%d", courseDto.getId(), courseId));
         return courseDto;
+    }
+
+    private Course getById(long id) {
+        return courseRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Course with id=" + id + " not found"));
     }
 }

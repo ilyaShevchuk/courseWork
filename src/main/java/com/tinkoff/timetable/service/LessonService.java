@@ -21,20 +21,22 @@ public class LessonService {
     private final LessonMapper lessonMapper;
     private final TeacherService teacherService;
 
+    @Transactional(readOnly = true)
     public Lesson getById(long id) {
         return lessonRepository.findById(id).orElseThrow(() -> {
-            throw new EntityNotFoundException(String.format("Lesson with id=%d not found",id));
+            throw new EntityNotFoundException(String.format("Lesson with id=%d not found", id));
         });
     }
 
     @Transactional
-    public List<LessonDto> getLessonsByTeacher(long teacherId){
+    public List<LessonDto> getLessonsByTeacher(long teacherId) {
         teacherService.getDtoById(teacherId);
         return lessonRepository.getAllByTeacherId(teacherId).stream()
                 .map(lessonMapper::fromEntity)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public LessonDto getDtoById(long id) {
         return lessonMapper.fromEntity(getById(id));
     }
@@ -58,6 +60,7 @@ public class LessonService {
         return lessonMapper.fromEntity(lessonRepository.save(old));
     }
 
+    @Transactional
     public void deleteLesson(long id) {
         Lesson byId = getById(id);
         lessonRepository.delete(byId);

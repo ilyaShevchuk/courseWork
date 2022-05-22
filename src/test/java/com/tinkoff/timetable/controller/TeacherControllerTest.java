@@ -166,9 +166,9 @@ public class TeacherControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails("admin")
     @Sql(statements = "INSERT INTO lesson(id, description, extra_info, name, time, type, teacher_id) " +
-            "VALUES (1, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T12:00', 0, 0)")
-    @Sql(statements = "INSERT INTO lesson(id, description, extra_info, name, time, type, teacher_id) " +
-            "VALUES (2, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T10:00', 0, 0)")
+            "VALUES " +
+            "(1, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T12:00', 0, 0)," +
+            "(2, 'desc', 'ауд. 2304, Кронверкский пр., д.49', 'lesson', '2022-05-25T10:00', 0, 0)")
     void getSchedule() throws Exception {
         long id = 0L;
         String uri = "/teacher/" + id + "/schedule";
