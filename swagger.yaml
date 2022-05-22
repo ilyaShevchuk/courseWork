@@ -1,0 +1,731 @@
+swagger: '2.0'
+info:
+  description: Api Documentation
+  version: '1.0'
+  title: Api Documentation
+  termsOfService: urn:tos
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0
+host: localhost:8080
+basePath: /
+tags:
+  - name: course-controller
+    description: Course Controller
+  - name: lesson-controller
+    description: Lesson Controller
+  - name: security-controller
+    description: Security Controller
+  - name: teacher-controller
+    description: Teacher Controller
+paths:
+  /admin/register:
+    post:
+      tags:
+        - security-controller
+      summary: registerAdmin
+      operationId: registerAdminUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: registrationRequest
+          description: registrationRequest
+          required: true
+          schema:
+            $ref: '#/definitions/RegistrationRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /course/all:
+    get:
+      tags:
+        - course-controller
+      summary: getAllCourses
+      operationId: getAllCoursesUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/IResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /course/creation:
+    post:
+      tags:
+        - course-controller
+      summary: addCourse
+      operationId: addCourseUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: requestBody
+          description: requestBody
+          required: true
+          schema:
+            $ref: '#/definitions/CourseDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /course/{course_id}:
+    get:
+      tags:
+        - course-controller
+      summary: getCourse
+      operationId: getCourseUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: course_id
+          in: path
+          description: course_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - course-controller
+      summary: updateCourse
+      operationId: updateCourseUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: course_id
+          in: path
+          description: course_id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: requestBody
+          description: requestBody
+          required: true
+          schema:
+            $ref: '#/definitions/CourseDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - course-controller
+      summary: deleteCourse
+      operationId: deleteCourseUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: course_id
+          in: path
+          description: course_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /course/{course_id}/copy:
+    post:
+      tags:
+        - course-controller
+      summary: addCourseFromCopy
+      operationId: addCourseFromCopyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: course_id
+          in: path
+          description: course_id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: teacherId
+          description: teacherId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /course/{course_id}/lesson:
+    get:
+      tags:
+        - course-controller
+      summary: getCourseLessons
+      operationId: getCourseLessonsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: course_id
+          in: path
+          description: course_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/IResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - course-controller
+      summary: addLesson
+      operationId: addLessonUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: course_id
+          in: path
+          description: course_id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: requestBody
+          description: requestBody
+          required: true
+          schema:
+            $ref: '#/definitions/LessonDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /lesson/creation:
+    post:
+      tags:
+        - lesson-controller
+      summary: addLesson
+      operationId: addLessonUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: requestBody
+          description: requestBody
+          required: true
+          schema:
+            $ref: '#/definitions/LessonDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /lesson/{lesson_id}:
+    get:
+      tags:
+        - lesson-controller
+      summary: getLesson
+      operationId: getLessonUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: lesson_id
+          in: path
+          description: lesson_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - lesson-controller
+      summary: updateLesson
+      operationId: updateLessonUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: lesson_id
+          in: path
+          description: lesson_id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: requestBody
+          description: requestBody
+          required: true
+          schema:
+            $ref: '#/definitions/LessonDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - lesson-controller
+      summary: deleteLesson
+      operationId: deleteLessonUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: lesson_id
+          in: path
+          description: lesson_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /lesson/{lesson_id}/teacher:
+    post:
+      tags:
+        - lesson-controller
+      summary: appointTeacher
+      operationId: appointTeacherUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: lesson_id
+          in: path
+          description: lesson_id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: teacherId
+          description: teacherId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /register:
+    post:
+      tags:
+        - security-controller
+      summary: registerTeacher
+      operationId: registerTeacherUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: registrationRequest
+          description: registrationRequest
+          required: true
+          schema:
+            $ref: '#/definitions/RegistrationRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /teacher/creation:
+    post:
+      tags:
+        - teacher-controller
+      summary: addTeacher
+      operationId: addTeacherUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: requestBody
+          description: requestBody
+          required: true
+          schema:
+            $ref: '#/definitions/TeacherDto'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /teacher/{teacher_id}:
+    get:
+      tags:
+        - teacher-controller
+      summary: getTeacher
+      operationId: getTeacherUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: teacher_id
+          in: path
+          description: teacher_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - teacher-controller
+      summary: updateTeacher
+      operationId: updateTeacherUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: requestBody
+          description: requestBody
+          required: true
+          schema:
+            $ref: '#/definitions/TeacherDto'
+        - name: teacher_id
+          in: path
+          description: teacher_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - teacher-controller
+      summary: deleteTeacher
+      operationId: deleteTeacherUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: teacher_id
+          in: path
+          description: teacher_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IResponse'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /teacher/{teacher_id}/schedule:
+    post:
+      tags:
+        - teacher-controller
+      summary: getSchedule
+      operationId: getScheduleUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: teacher_id
+          in: path
+          description: teacher_id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/IResponse'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+definitions:
+  CourseDto:
+    type: object
+    properties:
+      category:
+        type: string
+        enum:
+          - CATEGORY
+          - TECHNICAL
+          - PROGRAMMING
+          - JAVA
+          - C_PLUS_PLUS
+          - DEVOPS_TOOLS
+          - MATH
+          - GEOMETRY
+          - ALGEBRA
+          - HUMANITIES
+          - HISTORY
+          - RUSSIAN
+          - WORLD
+      description:
+        type: string
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      studentsCount:
+        type: integer
+        format: int32
+      teacher_id:
+        type: integer
+        format: int64
+      type:
+        type: string
+        enum:
+          - ONLINE
+          - OFFLINE
+    title: CourseDto
+  IResponse:
+    type: object
+    title: IResponse
+  LessonDto:
+    type: object
+    properties:
+      description:
+        type: string
+      extra_info:
+        type: string
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      teacher_id:
+        type: integer
+        format: int64
+      time:
+        type: string
+        format: date-time
+      type:
+        type: string
+        enum:
+          - ONLINE
+          - OFFLINE
+    title: LessonDto
+  RegistrationRequest:
+    type: object
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+      teacher:
+        $ref: '#/definitions/TeacherDto'
+    title: RegistrationRequest
+  TeacherDto:
+    type: object
+    properties:
+      age:
+        type: integer
+        format: int32
+      birthday:
+        type: string
+        format: date
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    title: TeacherDto
