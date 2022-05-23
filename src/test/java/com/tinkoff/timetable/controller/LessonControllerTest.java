@@ -160,7 +160,7 @@ public class LessonControllerTest extends AbstractControllerTest {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
                 .header(HttpHeaders.AUTHORIZATION, authUser))
                 .andReturn();
-        assertEquals(401, mvcResult.getResponse().getStatus());
+        assertEquals(403, mvcResult.getResponse().getStatus());
     }
 
 }
