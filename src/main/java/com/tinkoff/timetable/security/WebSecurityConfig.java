@@ -39,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .hasAuthority(Permission.TEACHER_CONTROL.getPermission())
                 .antMatchers(HttpMethod.DELETE, "/course/**", "lesson/**", "teacher/**")
                     .hasAuthority(Permission.DELETE.getPermission())
+                .antMatchers("/admin/**")
+                    .hasAuthority(Permission.TEACHER_CONTROL.getPermission())
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and().sessionManagement().disable();
