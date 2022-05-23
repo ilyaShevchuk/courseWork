@@ -146,7 +146,7 @@ public class TeacherControllerTest extends AbstractControllerTest {
         hibernateQueryInterceptor.startQueryCount();
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
                 .delete(uri)).andReturn();
-        assertEquals(2, hibernateQueryInterceptor.getQueryCount());
+        assertEquals(4, hibernateQueryInterceptor.getQueryCount());
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertTrue(teacherRepository.findById(id).isEmpty());
     }

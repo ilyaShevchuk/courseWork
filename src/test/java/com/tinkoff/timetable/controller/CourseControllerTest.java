@@ -124,7 +124,7 @@ public class CourseControllerTest extends AbstractControllerTest {
         hibernateQueryInterceptor.startQueryCount();
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
-        assertEquals(1, hibernateQueryInterceptor.getQueryCount());
+        assertEquals(2, hibernateQueryInterceptor.getQueryCount());
         assertEquals(200, mvcResult.getResponse().getStatus());
         String content = mvcResult.getResponse().getContentAsString();
         assertEquals(new CourseResponse(id, COURSE_NAME), mapFromJson(content, CourseResponse.class));
