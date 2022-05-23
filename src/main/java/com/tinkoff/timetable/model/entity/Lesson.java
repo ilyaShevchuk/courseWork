@@ -27,6 +27,7 @@ public class Lesson {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @Column(name = "time")

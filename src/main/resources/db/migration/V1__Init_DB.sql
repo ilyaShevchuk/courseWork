@@ -14,7 +14,8 @@ CREATE TABLE course
 CREATE TABLE course_lessons
 (
     course_id  BIGINT NOT NULL,
-    lessons_id BIGINT NOT NULL
+    lessons_id BIGINT NOT NULL,
+    PRIMARY KEY (course_id, lessons_id)
 );
 CREATE TABLE lesson
 (
