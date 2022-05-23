@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,8 +14,7 @@ import java.util.Set;
 @Table(name = "course")
 public class Course {
 
-    @GeneratedValue
-//            (strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     @Column(name = "id")
     private Long id;
@@ -28,8 +26,6 @@ public class Course {
     private String description;
 
     @Column(name = "category")
-//    @Enumerated(EnumType.ORDINAL)
-//    @Enumerated(EnumType.STRING)
     private CourseCategory category;
 
     @Column(name = "members")
@@ -38,10 +34,11 @@ public class Course {
     @Column(name = "type")
     private FormatType type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     private Set<Lesson> lessons;
 
     public Course() {

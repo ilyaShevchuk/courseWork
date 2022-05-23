@@ -7,6 +7,7 @@ import com.tinkoff.timetable.model.entity.Teacher;
 import com.tinkoff.timetable.model.mapper.LessonMapper;
 import com.tinkoff.timetable.model.mapper.TeacherMapper;
 import com.tinkoff.timetable.model.request.RegistrationRequest;
+import com.tinkoff.timetable.repository.CourseRepository;
 import com.tinkoff.timetable.repository.LessonRepository;
 import com.tinkoff.timetable.repository.TeacherRepository;
 import com.tinkoff.timetable.security.user.Role;
@@ -28,6 +29,7 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
     private final LessonRepository lessonRepository;
+    private final CourseRepository courseRepository;
     private final LessonMapper lessonMapper;
 
     @Transactional(readOnly = true)

@@ -27,7 +27,6 @@ public class CourseDto {
     @NotNull
     private FormatType type;
 
-    @NotNull
     @JsonProperty("teacher_id")
     private Long teacherId;
 }
