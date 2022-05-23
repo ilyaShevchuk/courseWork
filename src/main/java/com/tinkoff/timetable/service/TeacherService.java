@@ -9,6 +9,7 @@ import com.tinkoff.timetable.model.mapper.TeacherMapper;
 import com.tinkoff.timetable.model.request.RegistrationRequest;
 import com.tinkoff.timetable.repository.LessonRepository;
 import com.tinkoff.timetable.repository.TeacherRepository;
+import com.tinkoff.timetable.security.user.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,6 +73,7 @@ public class TeacherService {
         Teacher teacher = teacherMapper.fromDto(registrationRequest.getTeacher());
         teacher.setLogin(registrationRequest.getLogin());
         teacher.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        teacher.setRole(Role.TEACHER);
         log.info(String.format("Teacher id=%d registered", teacher.getId()));
         return teacherMapper.fromEntity(teacherRepository.save(teacher));
     }
@@ -83,6 +85,15 @@ public class TeacherService {
                 .map(lessonMapper::fromEntity)
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    public TeacherDto registerAdmin(RegistrationRequest registrationRequest) {
+        Teacher teacher = teacherMapper.fromDto(registrationRequest.getTeacher());
+        teacher.setLogin(registrationRequest.getLogin());
+        teacher.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        teacher.setRole(Role.ADMIN);
+        log.info(String.format("Admin id=%d registered", teacher.getId()));
+        return teacherMapper.fromEntity(teacherRepository.save(teacher));
     }
 }
 

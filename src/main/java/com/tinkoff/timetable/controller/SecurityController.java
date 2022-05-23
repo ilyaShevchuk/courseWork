@@ -30,7 +30,7 @@ public class SecurityController {
 
     @PostMapping("/admin/register")
     public ResponseEntity<IResponse> registerAdmin(@RequestBody @Valid RegistrationRequest registrationRequest) {
-
+        teacherService.registerAdmin(registrationRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
